@@ -1459,6 +1459,11 @@ func (c *container) addHostMount(system *mount.System) error {
 		return nil
 	}
 
+	if c.engine.EngineConfig.GetNoHostfs() {
+		sylog.Debugf("Skipping host file systems mount by user request.")
+		return nil
+	}
+
 	info, err := proc.GetMountPointMap("/proc/self/mountinfo")
 	if err != nil {
 		return err
