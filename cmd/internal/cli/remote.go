@@ -259,7 +259,7 @@ var RemoteRemoveCmd = &cobra.Command{
 	PreRun: setGlobalRemoteConfig,
 	Run: func(cmd *cobra.Command, args []string) {
 		name := args[0]
-		if err := singularity.RemoteRemove(remoteConfig, name); err != nil {
+		if err := singularity.RemoteRemove(remoteConfig, name, global); err != nil {
 			sylog.Fatalf("%s", err)
 		}
 		sylog.Infof("Remote %q removed.", name)
