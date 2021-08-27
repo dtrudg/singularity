@@ -297,11 +297,10 @@ func create(ctx context.Context, engine *EngineOperations, rpcOps *client.RPC, p
 	if os.Geteuid() == 0 && !c.userNS {
 		path := engine.EngineConfig.GetCgroupsPath()
 		if path != "" {
-			cgroupPath := filepath.Join("/singularity", strconv.Itoa(pid))
-			cgroupManager = &cgroups.Manager{Pid: pid, Path: cgroupPath}
-			if err := cgroupManager.ApplyFromFile(path); err != nil {
-				return fmt.Errorf("failed to apply cgroups resources restriction: %s", err)
+			if err := cgroups.ApplyFromFile(path, pid); err != nil {
+				return fmt.Errorf("while applying cgroups config: %v", err)
 			}
+
 		}
 	}
 

@@ -6,7 +6,6 @@
 package cgroups
 
 import (
-	"encoding/json"
 	"fmt"
 	"path/filepath"
 	"strings"
@@ -20,25 +19,6 @@ type Manager struct {
 	Path   string
 	Pid    int
 	cgroup cgroups.Cgroup
-}
-
-func readSpecFromFile(path string) (spec specs.LinuxResources, err error) {
-	conf, err := LoadConfig(path)
-	if err != nil {
-		return
-	}
-
-	// convert TOML structures to OCI JSON structures
-	data, err := json.Marshal(conf)
-	if err != nil {
-		return
-	}
-
-	if err = json.Unmarshal(data, &spec); err != nil {
-		return
-	}
-
-	return
 }
 
 // GetCgroupRootPath returns cgroup root path
