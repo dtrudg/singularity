@@ -37,13 +37,13 @@ require (
 	github.com/pelletier/go-toml v1.9.4
 	github.com/pkg/errors v0.9.1
 	github.com/seccomp/libseccomp-golang v0.9.2-0.20211028222634-77bddc247e72
-	github.com/spf13/cobra v1.3.0
+	github.com/spf13/cobra v1.4.0
 	github.com/spf13/pflag v1.0.5
 	github.com/sylabs/json-resp v0.8.0
 	github.com/sylabs/scs-build-client v0.2.1
 	github.com/sylabs/scs-key-client v0.7.1
 	github.com/sylabs/scs-library-client v1.2.1
-	github.com/sylabs/sif/v2 v2.3.2
+	github.com/sylabs/sif/v2 v2.4.2
 	github.com/urfave/cli v1.22.5 // indirect
 	github.com/vbauerster/mpb/v4 v4.12.2
 	github.com/vbauerster/mpb/v6 v6.0.4
