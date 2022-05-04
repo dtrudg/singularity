@@ -9,8 +9,8 @@ require (
 	github.com/apex/log v1.9.0
 	github.com/blang/semver/v4 v4.0.0
 	github.com/buger/jsonparser v1.1.1
-	github.com/containerd/containerd v1.6.2
-	github.com/containernetworking/cni v1.0.1
+	github.com/containerd/containerd v1.6.4
+	github.com/containernetworking/cni v1.1.0
 	github.com/containernetworking/plugins v1.1.1
 	github.com/containers/common v0.47.5
 	github.com/containers/image/v5 v5.21.0
@@ -112,7 +112,7 @@ require (
 	github.com/morikuni/aec v1.0.0 // indirect
 	github.com/networkplumbing/go-nft v0.2.0 // indirect
 	github.com/proglottis/gpgme v0.1.1 // indirect
-	github.com/prometheus/client_golang v1.11.0 // indirect
+	github.com/prometheus/client_golang v1.11.1 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
 	github.com/prometheus/common v0.30.0 // indirect
 	github.com/prometheus/procfs v0.7.3 // indirect
