@@ -9,11 +9,11 @@
 package singularity
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
 	"os"
-	"os/signal"
 	"strconv"
 	"strings"
 	"syscall"
@@ -178,7 +178,7 @@ func calculateMemoryUsage(stats *libcgroups.MemoryStats) (float64, float64, floa
 }
 
 // InstanceStats uses underlying cgroups to get statistics for a named instance
-func InstanceStats(name, instanceUser string, formatJSON bool, noStream bool) error {
+func InstanceStats(ctx context.Context, name, instanceUser string, formatJSON bool, noStream bool) error {
 	ii, err := instanceListOrError(instanceUser, name)
 	if err != nil {
 		return err
@@ -225,14 +225,9 @@ func InstanceStats(name, instanceUser string, formatJSON bool, noStream bool) er
 		return fmt.Errorf("could not write stats header: %v", err)
 	}
 
-	// Listen for Control + C to exit
-	c := make(chan os.Signal, 1)
-	signal.Notify(c, os.Interrupt, syscall.SIGTERM)
-
 	for {
 		select {
-		case <-c:
-			sylog.Infof("Detected Control + C, exiting.")
+		case <-ctx.Done():
 			return nil
 
 		case <-time.After(1 * time.Second):
