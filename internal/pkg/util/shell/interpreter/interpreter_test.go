@@ -303,6 +303,7 @@ func TestEvaluateEnv(t *testing.T) {
 		"OPTIND=1",
 		fmt.Sprintf("PWD=%s", pwd),
 		fmt.Sprintf("UID=%d", os.Getuid()),
+		fmt.Sprintf("EUID=%d", os.Getuid()),
 		fmt.Sprintf("GID=%d", os.Getgid()),
 	}
 

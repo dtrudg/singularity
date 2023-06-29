@@ -879,7 +879,7 @@ func (l *Launcher) setEnv(ctx context.Context, args []string) error {
 			}
 			// Don't attempt to overwrite bash builtin readonly vars
 			// https://github.com/sylabs/singularity/issues/1263
-			if e[0] == "UID" || e[0] == "GID" {
+			if e[0] == "UID" || e[0] == "GID" || e[0] == "EUID" {
 				continue
 			}
 			// Ensure we don't overwrite --env variables with environment file

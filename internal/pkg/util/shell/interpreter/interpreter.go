@@ -124,7 +124,11 @@ func New(r io.Reader, name string, args []string, envs []string, runnerOptions .
 
 	opts := []interp.RunnerOption{
 		interp.StdIO(os.Stdin, os.Stdout, os.Stderr),
-		interp.ExecHandler(s.internalExecHandler()),
+		interp.ExecHandlers(
+			func(next interp.ExecHandlerFunc) interp.ExecHandlerFunc {
+				return s.internalExecHandler()
+			},
+		),
 		interp.OpenHandler(s.internalOpenHandler()),
 		interp.Params("--"),
 		interp.Env(expand.ListEnviron(envs...)),
@@ -302,7 +306,11 @@ func EvaluateEnv(ctx context.Context, script []byte, args []string, envs []strin
 	}
 
 	opts := []interp.RunnerOption{
-		interp.ExecHandler(execHandler),
+		interp.ExecHandlers(
+			func(next interp.ExecHandlerFunc) interp.ExecHandlerFunc {
+				return execHandler
+			},
+		),
 		interp.OpenHandler(openHandler),
 		interp.Env(newNonExportedEnv(envs)),
 	}
