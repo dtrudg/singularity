@@ -37,5 +37,9 @@ func main() {
 		replacements = append(replacements, "@"+values[0]+"@", values[1])
 	}
 
-	strings.NewReplacer(replacements...).WriteString(os.Stdout, string(stdin))
+	_, err = strings.NewReplacer(replacements...).WriteString(os.Stdout, string(stdin))
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "E: %v\n", err)
+		os.Exit(1)
+	}
 }

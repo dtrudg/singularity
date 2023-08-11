@@ -107,11 +107,11 @@ func getCachedConfig(uri string) io.ReadCloser {
 	return rc
 }
 
-func updateCachedConfig(uri string, data []byte) {
+func updateCachedConfig(uri string, data []byte) error {
 	dir := cacheDir()
 	if dir == "" {
-		return
+		return nil
 	}
 	config := filepath.Join(dir, uri+".json")
-	os.WriteFile(config, data, 0o600)
+	return os.WriteFile(config, data, 0o600)
 }

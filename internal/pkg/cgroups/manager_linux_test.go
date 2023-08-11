@@ -212,9 +212,15 @@ func testManager(t *testing.T, systemd bool) (pid int, manager *Manager, cleanup
 	}
 
 	cleanup = func() {
-		cmd.Process.Kill()
-		cmd.Process.Wait()
-		manager.Destroy()
+		if err := cmd.Process.Kill(); err != nil {
+			t.Errorf("while killing test process: %v", err)
+		}
+		if _, err := cmd.Process.Wait(); err != nil {
+			t.Errorf("while waiting test process: %v", err)
+		}
+		if err := manager.Destroy(); err != nil {
+			t.Errorf("while detroying cgroup: %v", err)
+		}
 	}
 
 	return pid, manager, cleanup

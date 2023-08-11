@@ -841,7 +841,9 @@ func (c *container) addOverlayMount(system *mount.System) error {
 
 				if !img.Writable {
 					flags |= syscall.MS_RDONLY
-					ov.AddLowerDir(filepath.Join(dst, "upper"))
+					if err := ov.AddLowerDir(filepath.Join(dst, "upper")); err != nil {
+						return err
+					}
 				}
 
 				err = system.Points.AddImage(mount.PreLayerTag, src, dst, "ext3", flags, offset, size, nil)
@@ -854,7 +856,9 @@ func (c *container) addOverlayMount(system *mount.System) error {
 				if err != nil {
 					return err
 				}
-				ov.AddLowerDir(dst)
+				if err := ov.AddLowerDir(dst); err != nil {
+					return err
+				}
 			case image.SANDBOX:
 				// In setuid mode, only root user may mount a directory overlay, as the mount
 				// will take place privileged, and could be abused.
@@ -875,7 +879,9 @@ func (c *container) addOverlayMount(system *mount.System) error {
 				if err != nil {
 					return fmt.Errorf("while adding sandbox image: %s", err)
 				}
-				system.Points.AddRemount(mount.PreLayerTag, dst, flags)
+				if err := system.Points.AddRemount(mount.PreLayerTag, dst, flags); err != nil {
+					return err
+				}
 
 				if !img.Writable {
 					// check if the sandbox directory is located on a compatible
@@ -884,7 +890,9 @@ func (c *container) addOverlayMount(system *mount.System) error {
 						return err
 					}
 					if fs.IsDir(filepath.Join(img.Path, "upper")) {
-						ov.AddLowerDir(filepath.Join(dst, "upper"))
+						if err := ov.AddLowerDir(filepath.Join(dst, "upper")); err != nil {
+							return err
+						}
 					} else {
 						ov.AddLowerDir(dst)
 					}

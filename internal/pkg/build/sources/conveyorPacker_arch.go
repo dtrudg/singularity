@@ -70,12 +70,17 @@ func (cp *ArchConveyorPacker) prepareFakerootEnv(ctx context.Context) (func(), e
 	}
 
 	umountFn := func() {
-		syscall.Unmount(mountPath, syscall.MNT_DETACH)
-		syscall.Unmount(umountPath, syscall.MNT_DETACH)
-		syscall.Unmount(procPath, syscall.MNT_DETACH)
+		if err := syscall.Unmount(mountPath, syscall.MNT_DETACH); err != nil {
+			sylog.Errorf("while unmounting %s: %v", mountPath, err)
+		}
+		if err := syscall.Unmount(procPath, syscall.MNT_DETACH); err != nil {
+			sylog.Errorf("while unmounting %s: %v", procPath, err)
+		}
 		for _, d := range devs {
 			path := filepath.Join(cp.b.RootfsPath, d)
-			syscall.Unmount(path, syscall.MNT_DETACH)
+			if err := syscall.Unmount(path, syscall.MNT_DETACH); err != nil {
+				sylog.Errorf("while unmounting %s: %v", path, err)
+			}
 		}
 	}
 

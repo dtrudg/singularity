@@ -17,6 +17,7 @@ import (
 	"github.com/sylabs/singularity/v4/internal/pkg/runtime/engine/config/oci"
 	"github.com/sylabs/singularity/v4/internal/pkg/runtime/engine/config/oci/generate"
 	"github.com/sylabs/singularity/v4/internal/pkg/util/passwdfile"
+	"github.com/sylabs/singularity/v4/pkg/sylog"
 )
 
 // RootFs is the default root path for OCI bundle
@@ -66,7 +67,9 @@ func GenerateBundleConfig(bundlePath string, config *specs.Spec) (*generate.Gene
 	}
 	defer func() {
 		if err != nil {
-			DeleteBundle(bundlePath)
+			if delErr := DeleteBundle(bundlePath); delErr != nil {
+				sylog.Errorf("while deleting bundle: %s", err)
+			}
 		}
 	}()
 

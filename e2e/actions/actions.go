@@ -1737,7 +1737,7 @@ func (c actionTests) fuseMount(t *testing.T) {
 
 	// terminate ssh server once done
 	defer func() {
-		stdinWriter.Write([]byte("bye"))
+		stdinWriter.Write([]byte("bye")) //nolint:errcheck
 		stdinWriter.Close()
 	}()
 
@@ -2572,7 +2572,11 @@ func (c actionTests) relWorkdirScratch(t *testing.T) {
 	if err != nil {
 		t.Fatalf("could not get current working directory: %s", err)
 	}
-	defer os.Chdir(prevCwd)
+	defer func() {
+		if err := os.Chdir(prevCwd); err != nil {
+			t.Errorf("could not restore vwd: %s", err)
+		}
+	}()
 	if err = os.Chdir(testdir); err != nil {
 		t.Fatalf("could not change cwd to %q: %s", testdir, err)
 	}

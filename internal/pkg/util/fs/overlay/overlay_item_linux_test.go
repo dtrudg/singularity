@@ -344,7 +344,9 @@ func TestImageRO(t *testing.T) {
 				t.Fatalf("unable to mount image for reading: %s", err)
 			}
 			t.Cleanup(func() {
-				item.Unmount()
+				if err := item.Unmount(); err != nil {
+					t.Logf("while unmounting item in cleanup:%v", err)
+				}
 			})
 
 			testFileStagedPath := filepath.Join(item.GetMountDir(), testFilePath)
@@ -381,7 +383,9 @@ func TestExtfsRW(t *testing.T) {
 		t.Fatalf("unable to mount extfs image for reading & writing: %s", err)
 	}
 	t.Cleanup(func() {
-		item.Unmount()
+		if err := item.Unmount(); err != nil {
+			t.Logf("while unmounting item in cleanup:%v", err)
+		}
 	})
 
 	testFileStagedPath := filepath.Join(item.GetMountDir(), testFilePath)

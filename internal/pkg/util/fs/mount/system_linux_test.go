@@ -19,7 +19,9 @@ func TestSystem(t *testing.T) {
 
 	points := &Points{}
 
-	points.AddBind(BindsTag, "/etc/hosts", "/etc/hosts", syscall.MS_BIND|syscall.MS_REC)
+	if err := points.AddBind(BindsTag, "/etc/hosts", "/etc/hosts", syscall.MS_BIND|syscall.MS_REC); err != nil {
+		t.Fatal(err)
+	}
 
 	system := &System{
 		Points: points,

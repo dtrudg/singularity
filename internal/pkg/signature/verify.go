@@ -306,7 +306,11 @@ func Verify(ctx context.Context, path string, opts ...VerifyOpt) error {
 	if err != nil {
 		return err
 	}
-	defer f.UnloadContainer()
+	defer func() {
+		if err := f.UnloadContainer(); err != nil {
+			sylog.Errorf("%v", err)
+		}
+	}()
 
 	// Get options to validate f.
 	vopts, err := v.getOpts(ctx, f)
@@ -347,7 +351,11 @@ func VerifyFingerprints(ctx context.Context, path string, fingerprints []string,
 	if err != nil {
 		return err
 	}
-	defer f.UnloadContainer()
+	defer func() {
+		if err := f.UnloadContainer(); err != nil {
+			sylog.Errorf("%v", err)
+		}
+	}()
 
 	// Get options to validate f.
 	vopts, err := v.getOpts(ctx, f)

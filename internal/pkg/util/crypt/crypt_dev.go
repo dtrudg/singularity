@@ -71,7 +71,11 @@ func (crypt *Device) CloseCryptDevice(path string) error {
 	if err != nil {
 		return err
 	}
-	defer lock.Release(fd)
+	defer func() {
+		if err := lock.Release(fd); err != nil {
+			sylog.Errorf("error while releasing lock on /dev/mapper: %v", err)
+		}
+	}()
 
 	cmd := exec.Command(cryptsetup, "close", path)
 	cmd.SysProcAttr = &syscall.SysProcAttr{
@@ -177,7 +181,9 @@ func (crypt *Device) EncryptFilesystem(path string, key []byte) (string, error) 
 	}
 
 	go func() {
-		stdin.Write(key)
+		if _, err := stdin.Write(key); err != nil {
+			sylog.Errorf("while writing key to cryptsetup: %v", err)
+		}
 		stdin.Close()
 	}()
 
@@ -200,7 +206,9 @@ func (crypt *Device) EncryptFilesystem(path string, key []byte) (string, error) 
 		return "", err
 	}
 
-	copyDeviceContents(path, "/dev/mapper/"+nextCrypt, fSize)
+	if err := copyDeviceContents(path, "/dev/mapper/"+nextCrypt, fSize); err != nil {
+		return "", err
+	}
 
 	cmd = exec.Command(cryptsetup, "close", nextCrypt)
 	sylog.Debugf("Running %s %s", cmd.Path, strings.Join(cmd.Args, " "))
@@ -269,7 +277,11 @@ func (crypt *Device) Open(key []byte, path string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("unable to acquire lock on /dev/mapper")
 	}
-	defer lock.Release(fd)
+	defer func() {
+		if err := lock.Release(fd); err != nil {
+			sylog.Errorf("error while releasing lock on /dev/mapper: %v", err)
+		}
+	}()
 
 	maxRetries := 3 // Arbitrary number of retries.
 

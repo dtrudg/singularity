@@ -10,6 +10,7 @@ import (
 	"github.com/sylabs/sif/v2/pkg/siftool"
 	"github.com/sylabs/singularity/v4/docs"
 	"github.com/sylabs/singularity/v4/pkg/cmdline"
+	"github.com/sylabs/singularity/v4/pkg/sylog"
 )
 
 func init() {
@@ -22,7 +23,9 @@ func init() {
 			Example:               docs.SIFExample,
 			DisableFlagsInUseLine: true,
 		}
-		siftool.AddCommands(cmd)
+		if err := siftool.AddCommands(cmd); err != nil {
+			sylog.Fatalf("while adding siftool commands: %v", err)
+		}
 
 		cmdManager.RegisterCmd(cmd)
 	})

@@ -67,7 +67,7 @@ func askQuestionUsingGenericDescr(f *os.File) (string, error) {
 	// Note that we do not check for errors since some cases (e.g., pipes)
 	// will actually not allow to perform a Seek(). This is intended and
 	// will not create a problem.
-	f.Seek(pos+int64(strLen), io.SeekStart)
+	f.Seek(pos+int64(strLen), io.SeekStart) //nolint:errcheck
 
 	return response, nil
 }

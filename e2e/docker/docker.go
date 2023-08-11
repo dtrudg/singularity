@@ -29,6 +29,7 @@ import (
 	"github.com/sylabs/singularity/v4/e2e/internal/testhelper"
 	"github.com/sylabs/singularity/v4/internal/pkg/test/tool/require"
 	"github.com/sylabs/singularity/v4/internal/pkg/util/fs"
+	"github.com/sylabs/singularity/v4/pkg/sylog"
 	"golang.org/x/sys/unix"
 )
 
@@ -1086,7 +1087,11 @@ func (c ctx) testDockerPlatform(t *testing.T) {
 
 func checkOCISIFPlatform(t *testing.T, imgPath, platform string) {
 	fi, err := sif.LoadContainerFromPath(imgPath, sif.OptLoadWithFlag(os.O_RDONLY))
-	defer fi.UnloadContainer()
+	defer func() {
+		if err := fi.UnloadContainer(); err != nil {
+			sylog.Errorf("%v", err)
+		}
+	}()
 	if err != nil {
 		t.Errorf("while loading SIF: %v", err)
 	}

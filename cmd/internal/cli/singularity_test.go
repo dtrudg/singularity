@@ -24,14 +24,20 @@ func TestCreateConfDir(t *testing.T) {
 	dir := "/tmp/" + string(bytes)
 
 	// create the directory and check that it exists
-	handleConfDir(dir)
+	if err := handleConfDir(dir); err != nil {
+		t.Fatalf("while preparing config dir: %v", err)
+	}
 	defer os.RemoveAll(dir)
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
 		t.Errorf("failed to create directory %s", dir)
 	} else {
 		// stick something in the directory and make sure it isn't deleted
-		os.WriteFile(dir+"/foo", []byte(""), 0o655)
-		handleConfDir(dir)
+		if err := os.WriteFile(dir+"/foo", []byte(""), 0o655); err != nil {
+			t.Fatalf("while writing test file: %v", err)
+		}
+		if err := handleConfDir(dir); err != nil {
+			t.Fatalf("while preparing config dir: %v", err)
+		}
 		if _, err := os.Stat(dir + "/foo"); os.IsNotExist(err) {
 			t.Errorf("inadvertently overwrote existing directory %s", dir)
 		}

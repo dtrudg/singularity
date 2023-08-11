@@ -135,7 +135,9 @@ func (b *Bundle) Create(ctx context.Context, ociConfig *specs.Spec) error {
 	rootfsLayer := imageManifest.Layers[0]
 	// TODO - reference the mediatype as a const imported from somewhere?
 	if rootfsLayer.MediaType != "application/vnd.sylabs.image.layer.v1.squashfs" {
-		tools.DeleteBundle(b.bundlePath)
+		if err := tools.DeleteBundle(b.bundlePath); err != nil {
+			sylog.Errorf("while deleting bundle: %v", err)
+		}
 		return fmt.Errorf("unsupported layer mediaType %q", rootfsLayer.MediaType)
 	}
 

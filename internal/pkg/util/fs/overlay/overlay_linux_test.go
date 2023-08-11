@@ -224,7 +224,9 @@ func TestAbsOverlay(t *testing.T) {
 		t.Fatal(err)
 	}
 	t.Cleanup(func() {
-		os.Chdir(oldDir)
+		if err := os.Chdir(oldDir); err != nil {
+			t.Logf("while chdir to %q in cleanup:%v", oldDir, err)
+		}
 	})
 
 	innerDir := filepath.Join(tmpDir, "inner")

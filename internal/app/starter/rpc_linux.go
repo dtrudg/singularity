@@ -28,7 +28,9 @@ func RPCServer(socket int, e *engine.Engine) {
 		sylog.Fatalf("socket communication error: %s\n", err)
 	}
 	comm.Close()
-	engine.ServeRPCRequests(e, conn)
+	if err := engine.ServeRPCRequests(e, conn); err != nil {
+		sylog.Fatalf("rpc server error: %s", err)
+	}
 
 	os.Exit(0)
 }

@@ -24,6 +24,7 @@ import (
 	"github.com/sylabs/singularity/v4/pkg/image"
 	"github.com/sylabs/singularity/v4/pkg/ocibundle"
 	"github.com/sylabs/singularity/v4/pkg/ocibundle/tools"
+	"github.com/sylabs/singularity/v4/pkg/sylog"
 	useragent "github.com/sylabs/singularity/v4/pkg/util/user-agent"
 )
 
@@ -125,22 +126,32 @@ func (s *sifBundle) Create(ctx context.Context, ociConfig *specs.Spec) error {
 
 	rootFs := tools.RootFs(s.bundlePath).Path()
 	if err := squashfs.FUSEMount(ctx, offset, s.image, rootFs); err != nil {
-		tools.DeleteBundle(s.bundlePath)
+		if err := tools.DeleteBundle(s.bundlePath); err != nil {
+			sylog.Errorf("while deleting bundle: %v", err)
+		}
 		return fmt.Errorf("failed to mount SIF partition: %s", err)
 	}
 
 	if err := s.writeConfig(g); err != nil {
 		// best effort to release FUSE mount
-		squashfs.FUSEUnmount(ctx, rootFs)
-		tools.DeleteBundle(s.bundlePath)
+		if err := squashfs.FUSEUnmount(ctx, rootFs); err != nil {
+			sylog.Errorf("while unmounting %s: %v", rootFs, err)
+		}
+		if err := tools.DeleteBundle(s.bundlePath); err != nil {
+			sylog.Errorf("while deleting bundle: %v", err)
+		}
 		return fmt.Errorf("failed to write OCI configuration: %s", err)
 	}
 
 	if s.writable {
 		if err := tools.CreateOverlay(s.bundlePath); err != nil {
 			// best effort to release FUSE mount
-			squashfs.FUSEUnmount(ctx, rootFs)
-			tools.DeleteBundle(s.bundlePath)
+			if err := squashfs.FUSEUnmount(ctx, rootFs); err != nil {
+				sylog.Errorf("while unmounting %s: %v", rootFs, err)
+			}
+			if err := tools.DeleteBundle(s.bundlePath); err != nil {
+				sylog.Errorf("while deleting bundle: %v", err)
+			}
 			return fmt.Errorf("failed to create overlay: %s", err)
 		}
 	}

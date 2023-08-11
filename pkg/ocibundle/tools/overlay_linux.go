@@ -92,7 +92,9 @@ func CreateOverlayTmpfs(bundlePath string, sizeMiB int, allowSetuid bool) (strin
 	defer func() {
 		if err != nil {
 			sylog.Debugf("Encountered error in CreateOverlayTmpfs; attempting to detach overlay dir %q", olDir)
-			syscall.Unmount(olDir, syscall.MNT_DETACH)
+			if err := syscall.Unmount(olDir, syscall.MNT_DETACH); err != nil {
+				sylog.Errorf("while unmounting %s: %v", olDir, err)
+			}
 		}
 	}()
 

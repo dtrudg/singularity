@@ -23,23 +23,30 @@ func TestExclusive(t *testing.T) {
 
 	ch := make(chan bool, 1)
 
+	// Acquire an exclusive lock
 	fd, err := Exclusive("/dev")
 	if err != nil {
-		t.Error(err)
+		t.Errorf("while acquiring initial lock: %v", err)
 	}
 
 	go func() {
-		Exclusive("/dev")
+		// Should block, and not error, waiting to acquire lock.
+		if _, err := Exclusive("/dev"); err != nil {
+			t.Errorf("while acquiring second lock: %v", err)
+		}
 		ch <- true
 	}()
 
 	select {
 	case <-time.After(1 * time.Second):
-		Release(fd)
+		if err := Release(fd); err != nil {
+			t.Errorf("while releasing lock: %v", err)
+		}
 		if err := Release(fd); err == nil {
 			t.Errorf("unexpected success during Release second call")
 		}
 	case <-ch:
+		// We acquired a second lock that should have been possible.
 		t.Errorf("lock acquired")
 	}
 }

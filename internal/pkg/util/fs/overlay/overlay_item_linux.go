@@ -210,7 +210,9 @@ func (i *Item) mountDir() error {
 	defer func() {
 		if err != nil {
 			sylog.Debugf("Encountered error with current overlay set; attempting to unmount %q", i.StagingDir)
-			syscall.Unmount(i.StagingDir, syscall.MNT_DETACH)
+			if err := syscall.Unmount(i.StagingDir, syscall.MNT_DETACH); err != nil {
+				sylog.Errorf("while unmounting %s: %v", i.StagingDir, err)
+			}
 		}
 	}()
 

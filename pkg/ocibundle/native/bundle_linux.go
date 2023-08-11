@@ -207,7 +207,9 @@ func (b *Bundle) Create(ctx context.Context, ociConfig *specs.Spec) error {
 	defer func() {
 		if err != nil {
 			sylog.Debugf("Encountered error with rootfs bind mount; attempting to unmount %q", bundleRootfs)
-			syscall.Unmount(bundleRootfs, syscall.MNT_DETACH)
+			if err := syscall.Unmount(bundleRootfs, syscall.MNT_DETACH); err != nil {
+				sylog.Errorf("while unmounting %s: %v", bundleRootfs, err)
+			}
 		}
 	}()
 

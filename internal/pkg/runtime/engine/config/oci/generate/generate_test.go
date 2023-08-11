@@ -212,7 +212,9 @@ func TestSave(t *testing.T) {
 		}
 	}()
 
-	g.Save(w)
+	if err := g.Save(w); err != nil {
+		t.Error(err)
+	}
 	w.Close()
 	wg.Wait()
 

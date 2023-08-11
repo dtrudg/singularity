@@ -159,8 +159,12 @@ func testAddProcV2(t *testing.T, systemd bool) {
 	}
 	newPid := cmd.Process.Pid
 	defer func() {
-		cmd.Process.Kill()
-		cmd.Process.Wait()
+		if err := cmd.Process.Kill(); err != nil {
+			t.Errorf("while killing test process: %v", err)
+		}
+		if _, err := cmd.Process.Wait(); err != nil {
+			t.Errorf("while waiting test process: %v", err)
+		}
 		cleanup()
 	}()
 
@@ -186,7 +190,9 @@ func testFreezeThawV2(t *testing.T, systemd bool) {
 	pid, manager, cleanup := testManager(t, systemd)
 	defer cleanup()
 
-	manager.Freeze()
+	if err := manager.Freeze(); err != nil {
+		t.Errorf("while freezing process: %v", err)
+	}
 	// cgroups v2 freeze is to interruptible sleep, which could actually occur
 	// for our cat /dev/zero while it's running, so check freeze marker as well
 	// as the process state here.
@@ -194,7 +200,9 @@ func testFreezeThawV2(t *testing.T, systemd bool) {
 	freezePath := path.Join(manager.cgroup.Path(""), "cgroup.freeze")
 	ensureInt(t, freezePath, 1)
 
-	manager.Thaw()
+	if err := manager.Thaw(); err != nil {
+		t.Errorf("while thawing process: %v", err)
+	}
 	ensureStateBecomes(t, pid, "RS")
 	ensureInt(t, freezePath, 0)
 }

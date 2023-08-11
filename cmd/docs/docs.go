@@ -81,5 +81,7 @@ func main() {
 		},
 	}
 	rootCmd.Flags().StringVarP(&dir, "dir", "d", ".", "Directory in which to put the generated documentation")
-	rootCmd.Execute()
+	if err := rootCmd.Execute(); err != nil {
+		sylog.Fatalf("%v", err)
+	}
 }

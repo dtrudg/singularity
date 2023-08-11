@@ -96,7 +96,11 @@ func (loop *Device) shareLoop(imageIno, imageDev uint64, mode int, number *int) 
 	if err != nil {
 		return false, err
 	}
-	defer lock.Release(fd)
+	defer func() {
+		if err := lock.Release(fd); err != nil {
+			sylog.Errorf("error while releasing lock on /dev: %v", err)
+		}
+	}()
 
 	for device := 0; device < loop.MaxLoopDevices; device++ {
 		*number = device
@@ -150,7 +154,11 @@ func (loop *Device) attachLoop(image *os.File, mode int, number *int) error {
 	if err != nil {
 		return err
 	}
-	defer lock.Release(fd)
+	defer func() {
+		if err := lock.Release(fd); err != nil {
+			sylog.Errorf("error while releasing lock on /dev: %v", err)
+		}
+	}()
 
 	for device := 0; device < loop.MaxLoopDevices; device++ {
 		*number = device

@@ -976,7 +976,7 @@ func (keyring *Handle) ExportPrivateKey(kpath string, armor bool) error {
 		if err != nil {
 			return fmt.Errorf("failed to read ASCII key format: %s", err)
 		}
-		file.WriteString(keyText)
+		_, err = file.WriteString(keyText)
 	}
 
 	if err != nil {
@@ -1012,7 +1012,7 @@ func (keyring *Handle) ExportPubKey(kpath string, armor bool) error {
 	if armor {
 		var keyText string
 		keyText, err = serializeEntity(entityToExport, openpgp.PublicKeyType)
-		file.WriteString(keyText)
+		_, err = file.WriteString(keyText)
 	} else {
 		err = entityToExport.Serialize(file)
 	}

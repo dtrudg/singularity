@@ -384,7 +384,9 @@ func preRun(cmd *cobra.Command, args []string) {
 
 	// Always perform remote build when builder flag is set
 	if cmd.Flags().Lookup("builder").Changed {
-		cmd.Flags().Lookup("remote").Value.Set("true")
+		if err := cmd.Flags().Lookup("remote").Value.Set("true"); err != nil {
+			sylog.Fatalf("while setting remote build flag: %v", err)
+		}
 	}
 }
 
@@ -513,7 +515,10 @@ func makeDockerCredentials(cmd *cobra.Command) (authConf *ocitypes.DockerAuthCon
 			if err != nil {
 				return authConf, err
 			}
-			usernameFlag.Value.Set(dockerAuthConfig.Username)
+			if err := usernameFlag.Value.Set(dockerAuthConfig.Username); err != nil {
+				return nil, err
+			}
+
 			usernameFlag.Changed = true
 		}
 
@@ -521,7 +526,9 @@ func makeDockerCredentials(cmd *cobra.Command) (authConf *ocitypes.DockerAuthCon
 		if err != nil {
 			return authConf, err
 		}
-		passwordFlag.Value.Set(dockerAuthConfig.Password)
+		if err := passwordFlag.Value.Set(dockerAuthConfig.Password); err != nil {
+			return nil, err
+		}
 		passwordFlag.Changed = true
 	}
 

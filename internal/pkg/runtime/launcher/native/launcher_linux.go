@@ -281,7 +281,9 @@ func (l *Launcher) Exec(ctx context.Context, ep launcher.ExecParams) error {
 		}
 	}
 
-	l.setCgroups(ep.Instance)
+	if err := l.setCgroups(ep.Instance); err != nil {
+		return fmt.Errorf("while setting instance cgroup configuration: %w", err)
+	}
 
 	// --boot flag requires privilege, so check for this.
 	err = launcher.WithPrivilege(l.cfg.Boot, "--boot", func() error { return nil })
@@ -1173,7 +1175,9 @@ func (l *Launcher) starterInteractive(useSuid bool) error {
 	}
 
 	// Allow any plugins with callbacks to modify the assembled Config
-	runPluginCallbacks(cfg)
+	if err := runPluginCallbacks(cfg); err != nil {
+		return fmt.Errorf("while running plugin callbacks: %w", err)
+	}
 
 	err := starter.Exec(
 		"Singularity runtime parent",
@@ -1194,7 +1198,9 @@ func (l *Launcher) starterInstance(name string, useSuid bool) error {
 	}
 
 	// Allow any plugins with callbacks to modify the assembled Config
-	runPluginCallbacks(cfg)
+	if err := runPluginCallbacks(cfg); err != nil {
+		return fmt.Errorf("while running plugin callbacks: %w", err)
+	}
 
 	pu, err := user.GetPwUID(uint32(os.Getuid()))
 	if err != nil {

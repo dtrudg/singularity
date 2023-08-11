@@ -812,7 +812,9 @@ func (c actionTests) actionOciCdi(t *testing.T) {
 			dir, _ := e2e.MakeTempDir(t, stws.mainDir, fmt.Sprintf("mount-dir-%d-", len(stws.mountDirs)+1), "")
 			// Make writable to all, due to current nested userns mapping restrictions.
 			// Will work without this once crun-specific single mapping is present.
-			os.Chmod(dir, 0o777)
+			if err := os.Chmod(dir, 0o777); err != nil {
+				t.Fatalf("couldn't chmod %q: %s", dir, err)
+			}
 			stws.mountDirs = append(stws.mountDirs, dir)
 		}
 

@@ -265,7 +265,11 @@ func PushOCISIF(ctx context.Context, sourceFile, destRef string, ociAuth *ocityp
 	if err != nil {
 		return err
 	}
-	defer fi.UnloadContainer()
+	defer func() {
+		if err := fi.UnloadContainer(); err != nil {
+			sylog.Errorf("%v", err)
+		}
+	}()
 
 	ix, err := ocisif.ImageIndexFromFileImage(fi)
 	if err != nil {

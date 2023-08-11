@@ -44,15 +44,17 @@ func TestReadFromWriteTo(t *testing.T) {
 		t.Run(test.name, func(t *testing.T) {
 			var r bytes.Buffer
 
-			test.c.WriteTo(&r)
-
-			new, err := ReadFrom(&r)
-			if err != nil {
-				t.Errorf("unexpected failure running %s test: %s", test.name, err)
+			if _, err := test.c.WriteTo(&r); err != nil {
+				t.Fatalf("failed to write config: %v", err)
 			}
 
-			if !reflect.DeepEqual(test.c, *new) {
-				t.Errorf("failed to read/write config:\n\thave: %v\n\twant: %v", test.c, *new)
+			readConfig, err := ReadFrom(&r)
+			if err != nil {
+				t.Errorf("failed to read config: %v", err)
+			}
+
+			if !reflect.DeepEqual(test.c, *readConfig) {
+				t.Errorf("failed to read/write config:\n\thave: %v\n\twant: %v", test.c, *readConfig)
 			}
 		})
 	}

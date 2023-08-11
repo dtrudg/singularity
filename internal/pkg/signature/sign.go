@@ -12,6 +12,7 @@ import (
 	"github.com/sylabs/sif/v2/pkg/integrity"
 	"github.com/sylabs/sif/v2/pkg/sif"
 	"github.com/sylabs/singularity/v4/internal/pkg/sypgp"
+	"github.com/sylabs/singularity/v4/pkg/sylog"
 )
 
 type signer struct {
@@ -86,7 +87,11 @@ func Sign(ctx context.Context, path string, opts ...SignOpt) error {
 	if err != nil {
 		return err
 	}
-	defer f.UnloadContainer()
+	defer func() {
+		if err := f.UnloadContainer(); err != nil {
+			sylog.Errorf("%v", err)
+		}
+	}()
 
 	// Apply signature(s).
 	is, err := integrity.NewSigner(f, s.opts...)

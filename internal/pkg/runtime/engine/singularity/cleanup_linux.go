@@ -77,7 +77,9 @@ func (e *EngineOperations) CleanupContainer(ctx context.Context, fatal error, st
 		privileged := false
 		// If a CNI configuration was allowed as non-root (or fakeroot)
 		if net != "none" && os.Geteuid() != 0 {
-			priv.Escalate()
+			if err := priv.Escalate(); err != nil {
+				return err
+			}
 			privileged = true
 		}
 		sylog.Debugf("Cleaning up CNI network config %s", net)
@@ -85,7 +87,9 @@ func (e *EngineOperations) CleanupContainer(ctx context.Context, fatal error, st
 			sylog.Errorf("could not delete networks: %v", err)
 		}
 		if privileged {
-			priv.Drop()
+			if err := priv.Drop(); err != nil {
+				return err
+			}
 		}
 	}
 

@@ -19,6 +19,7 @@ import (
 	"os"
 
 	"github.com/sylabs/sif/v2/pkg/sif"
+	"github.com/sylabs/singularity/v4/pkg/sylog"
 )
 
 var (
@@ -205,7 +206,11 @@ func getEncryptionKeyFromImage(fn string) ([]byte, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not load container: %w", err)
 	}
-	defer img.UnloadContainer()
+	defer func() {
+		if err := img.UnloadContainer(); err != nil {
+			sylog.Errorf("%v", err)
+		}
+	}()
 
 	primDescr, err := img.GetDescriptor(sif.WithPartitionType(sif.PartPrimSys))
 	if err != nil {

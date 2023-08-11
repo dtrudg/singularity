@@ -146,12 +146,15 @@ var (
 
 // ServeRPCRequests serves runtime engine RPC requests with
 // corresponding registered engine methods.
-func ServeRPCRequests(e *Engine, conn net.Conn) {
+func ServeRPCRequests(e *Engine, conn net.Conn) error {
 	methods, ok := registeredRPCMethods[e.EngineName]
 	if ok {
-		rpc.RegisterName(e.EngineName, methods)
+		if err := rpc.RegisterName(e.EngineName, methods); err != nil {
+			return err
+		}
 		rpc.ServeConn(conn)
 	}
+	return nil
 }
 
 // RegisterOperations registers engine operations for a runtime engine.

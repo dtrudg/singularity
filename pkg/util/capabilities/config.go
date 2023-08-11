@@ -46,9 +46,11 @@ func ReadFrom(r io.Reader) (*Config, error) {
 		// if no data in io.Reader, populate c with empty data
 		data, err := json.Marshal(c)
 		if err != nil {
-			return nil, fmt.Errorf("failed to initialize data")
+			return nil, fmt.Errorf("failed to initialize data: %v", err)
 		}
-		json.Unmarshal(data, c)
+		if err := json.Unmarshal(data, c); err != nil {
+			return nil, fmt.Errorf("failed to initialize data: %v", err)
+		}
 	}
 
 	return c, nil

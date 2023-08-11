@@ -37,7 +37,9 @@ func NewReader(src io.Reader, buildArgsMap map[string]string, defaultArgsMap map
 	bufWriter := io.Writer(&buf)
 	i := 0
 	for _, m := range matches {
-		bufWriter.Write(srcBytes[i:m[0]])
+		if _, err := bufWriter.Write(srcBytes[i:m[0]]); err != nil {
+			return nil, err
+		}
 		argName := string(srcBytes[m[2]:m[3]])
 		val, ok := buildArgsMap[argName]
 		if !ok {
@@ -46,11 +48,15 @@ func NewReader(src io.Reader, buildArgsMap map[string]string, defaultArgsMap map
 		if !ok {
 			return nil, fmt.Errorf("build var %s is not defined through either --build-arg (--build-arg-file) or 'arguments' section", argName)
 		}
-		bufWriter.Write([]byte(val))
+		if _, err := bufWriter.Write([]byte(val)); err != nil {
+			return nil, err
+		}
 		mapOfConsumedArgs[argName] = true
 		i = m[1]
 	}
-	bufWriter.Write(srcBytes[i:])
+	if _, err := bufWriter.Write(srcBytes[i:]); err != nil {
+		return nil, err
+	}
 
 	*consumedArgs = append(*consumedArgs, lo.Keys(mapOfConsumedArgs)...)
 

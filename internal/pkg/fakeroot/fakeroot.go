@@ -17,6 +17,7 @@ import (
 
 	specs "github.com/opencontainers/runtime-spec/specs-go"
 	"github.com/sylabs/singularity/v4/internal/pkg/util/user"
+	"github.com/sylabs/singularity/v4/pkg/sylog"
 	"github.com/sylabs/singularity/v4/pkg/util/fs/lock"
 )
 
@@ -177,9 +178,13 @@ func (c *Config) Close() error {
 
 	fd, err := lock.Exclusive(filename)
 	if err != nil {
-		return fmt.Errorf("error while acquiring lock in %s: %s", filename, err)
+		return fmt.Errorf("error while acquiring lock on %s: %s", filename, err)
 	}
-	defer lock.Release(fd)
+	defer func() {
+		if err := lock.Release(fd); err != nil {
+			sylog.Errorf("error while releasing lock on %q: %v", filename, err)
+		}
+	}()
 
 	if err := c.file.Truncate(0); err != nil {
 		return fmt.Errorf("error while truncating %s to 0: %s", filename, err)

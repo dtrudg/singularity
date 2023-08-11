@@ -17,6 +17,7 @@ import (
 
 	jsonresp "github.com/sylabs/json-resp"
 	"github.com/sylabs/singularity/v4/internal/pkg/remote/credential"
+	"github.com/sylabs/singularity/v4/pkg/sylog"
 	useragent "github.com/sylabs/singularity/v4/pkg/util/user-agent"
 )
 
@@ -178,7 +179,9 @@ func (ep *Config) GetAllServices() (map[string][]Service, error) {
 	}
 
 	if reader != cacheReader {
-		updateCachedConfig(epURL, b)
+		if err := updateCachedConfig(epURL, b); err != nil {
+			sylog.Warningf("while updating remote config cache: %v", err)
+		}
 	}
 
 	for k, v := range a {

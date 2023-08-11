@@ -215,7 +215,11 @@ func Test_verifier_getOpts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer emptyImage.UnloadContainer()
+	defer func() {
+		if err := emptyImage.UnloadContainer(); err != nil {
+			t.Error(err)
+		}
+	}()
 
 	oneGroupImage, err := sif.LoadContainerFromPath(filepath.Join("..", "..", "..", "test", "images", "one-group.sif"),
 		sif.OptLoadWithFlag(os.O_RDONLY),
@@ -223,7 +227,11 @@ func Test_verifier_getOpts(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	defer oneGroupImage.UnloadContainer()
+	defer func() {
+		if err := oneGroupImage.UnloadContainer(); err != nil {
+			t.Error(err)
+		}
+	}()
 
 	cb := func(*sif.FileImage, integrity.VerifyResult) bool { return false }
 
