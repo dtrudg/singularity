@@ -23,7 +23,7 @@ require (
 	github.com/cyphar/filepath-securejoin v0.2.4
 	github.com/docker/cli v24.0.7+incompatible
 	github.com/docker/distribution v2.8.3+incompatible
-	github.com/docker/docker v25.0.0-rc.1+incompatible
+	github.com/docker/docker v25.0.0-rc.2+incompatible
 	github.com/docker/go-units v0.5.0
 	github.com/fatih/color v1.16.0
 	github.com/go-log/log v0.2.0
@@ -41,7 +41,7 @@ require (
 	github.com/opencontainers/umoci v0.4.7
 	github.com/pelletier/go-toml/v2 v2.1.1
 	github.com/pkg/errors v0.9.1
-	github.com/samber/lo v1.39.0
+	github.com/samber/lo v1.3.0
 	github.com/seccomp/libseccomp-golang v0.10.0
 	github.com/shopspring/decimal v1.3.1
 	github.com/sigstore/sigstore v1.8.0
@@ -190,7 +190,6 @@ require (
 	go.opentelemetry.io/otel/sdk v1.19.0 // indirect
 	go.opentelemetry.io/otel/trace v1.19.0 // indirect
 	go.opentelemetry.io/proto/otlp v1.0.0 // indirect
-	golang.org/x/exp v0.0.0-20231006140011-7918f672742d // indirect
 	golang.org/x/mod v0.13.0 // indirect
 	golang.org/x/net v0.18.0 // indirect
 	golang.org/x/time v0.3.0 // indirect
