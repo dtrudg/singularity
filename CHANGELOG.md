@@ -19,6 +19,7 @@
   a new file, the container sees the update in `/etc/resolv.conf`.
 - Correctly escape ENV vars when importing OCI containers to native SIF, so that
   they match podman / docker behaviour.
+- Clarify error when trying to build --oci from a non-Dockerfile spec.
 
 ### New Features & Functionality
 
