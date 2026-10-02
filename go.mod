@@ -36,11 +36,11 @@ require (
 	github.com/moby/moby/client v0.5.0
 	github.com/moby/profiles/seccomp v0.2.3
 	github.com/moby/sys/user v0.4.1
-	github.com/moby/sys/userns v0.1.0
+	github.com/moby/sys/userns v0.2.1
 	github.com/moby/term v0.5.2
-	github.com/opencontainers/cgroups v0.0.6
+	github.com/opencontainers/cgroups v0.1.0
 	github.com/opencontainers/image-spec v1.1.1
-	github.com/opencontainers/runc v1.5.1
+	github.com/opencontainers/runc v1.5.2
 	github.com/opencontainers/runtime-spec v1.3.0
 	github.com/opencontainers/runtime-tools v0.9.1-0.20251205004911-5e639034dcdc
 	github.com/opencontainers/selinux v1.15.1
@@ -48,7 +48,7 @@ require (
 	github.com/pelletier/go-toml/v2 v2.4.3
 	github.com/samber/lo v1.53.0
 	github.com/sebdah/goldie/v2 v2.8.0
-	github.com/seccomp/libseccomp-golang v0.11.1
+	github.com/seccomp/libseccomp-golang v0.12.0
 	github.com/shopspring/decimal v1.4.0
 	github.com/sigstore/cosign/v2 v2.6.4
 	github.com/sigstore/sigstore v1.10.8
@@ -79,7 +79,7 @@ require (
 )
 
 require (
-	cyphar.com/go-pathrs v0.2.5 // indirect
+	cyphar.com/go-pathrs v0.2.6 // indirect
 	github.com/AdaLogics/go-fuzz-headers v0.0.0-20240806141605-e8a1dd7889d6 // indirect
 	github.com/Azure/go-ansiterm v0.0.0-20250102033503-faa5f7b0171c // indirect
 	github.com/Microsoft/go-winio v0.6.2 // indirect
